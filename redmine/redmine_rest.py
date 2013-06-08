@@ -176,7 +176,10 @@ class Redmine_Item(object):
 
             try:
                 # Try and remap to the required dictionary
-                self._changes['custom_field_values'] = { f['id']:f.get('value','') for f in self._changes['custom_fields']}
+                t = {}
+                for f in self._changes['custom_fields']:
+                    t[f['id']] = f.get('value', '')
+                self._changes['custom_field_values'] = t
             except:
                 pass
             else:
@@ -319,11 +322,16 @@ class Custom_Fields(object):
     
     def _get_all(self):
         '''Return all values.'''
-        return { f['id']:f.get('value','') for f in self._data }
+        t = {}
+        for f in self._data:
+            t[f['id']] = f.get('value', '')
+        return t
 
     def _get_changes(self):
         '''Get all changed values.'''
-        result = { f['id']:f.get('value','') for f in self._data if f.get('changed', False)}
+        result = {}
+        for f in [a for a in self._data if f.get('changed', False)]:
+            result[f['id']] = f.get('value', '')
         self._clear_changes
         return result
         
