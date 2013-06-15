@@ -566,7 +566,7 @@ class Redmine_Items_Manager(object):
         last_item = 0
         offset = 0
         current_item = None
-        limit = options.get('limit', 25)
+        limit = options.get('limit', 200)
         options['limit'] = limit
         target = self._query_path
         while True:

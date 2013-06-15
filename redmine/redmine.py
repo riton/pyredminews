@@ -125,6 +125,50 @@ class Project(Redmine_Item):
 		return '<Redmine project #%s "%s">' % (self.id, self.identifier)
 
 
+class Tracker(Redmine_Item):
+	'''Object representing a Redmine tracker.'''
+	# data hints:
+	id = None
+	subject = None
+	description = None
+	tracker = None
+	status = None
+	project = None
+	estimated_hours = None
+	done_ratio = None
+	assigned_to = None
+	start_date = None
+	due_date = None
+	
+	_protected_attr = ['id',
+                       'name'
+					   ]
+
+	_field_type = {
+    }
+
+
+	# these fields will map from tag to tag_id when saving the issue.
+	# for instance, redmine needs the category_id=#, not the category as given
+	# the logic will attempt to grab category['id'] to set category_id 
+	_remap_to_id = []
+
+	# How to communicate this info to/from the server
+	_query_container = 'trackers'
+	_query_path = '/trackers.json'
+	_item_path = None
+	_item_new_path = None
+
+
+	def __init__(self, redmine, *args, **kw_args):
+		# Override init to also set up sub-queries
+		# Call the base-class init
+		super(Tracker, self).__init__(redmine, *args, **kw_args)
+
+	def __str__(self):
+		return '<Redmine tracker #%s, "%s">' % (self.id, self.name)
+
+
 class Issue(Redmine_Item):
 	'''Object representing a Redmine issue.'''
 	# data hints:
@@ -510,6 +554,7 @@ class Redmine(Redmine_WS):
 		## ITEM MANAGERS
 		self.issues = Redmine_Items_Manager(self, Issue)
 		self.projects = Redmine_Items_Manager(self, Project)
+		self.trackers = Redmine_Items_Manager(self, Tracker)
 
 		if version_check >= 1.1:
 			self.users = Redmine_Items_Manager(self, User)
